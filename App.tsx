@@ -104,7 +104,7 @@ const App: React.FC = () => {
     setIsBookingLoading(true);
 
     const newBooking: Booking = {
-        id: Math.random().toString(36).substr(2, 9),
+        id: Math.random().toString(36).substring(2, 9),
         destinationId: dest.id,
         destinationName: dest.name,
         userId: user.id,
@@ -160,7 +160,7 @@ const App: React.FC = () => {
         const aiData = await generateDestinationDetails(newDestName);
         
         const newDest: Destination = {
-            id: Math.random().toString(36).substr(2, 9),
+            id: Math.random().toString(36).substring(2, 9),
             name: newDestName,
             location: newDestLocation,
             description: aiData.description,
@@ -477,13 +477,18 @@ const App: React.FC = () => {
   );
 
   const AdminPanelView = () => {
-    // Only allow admin
+    // Check auth safely with useEffect to avoid render side-effects
+    useEffect(() => {
+        if (user?.role !== 'admin') {
+            navigateTo(ViewState.HOME);
+        }
+    }, [user]);
+
     if (user?.role !== 'admin') {
-        setTimeout(() => navigateTo(ViewState.HOME), 0);
-        return null;
+        return null; 
     }
 
-    const allBookings = bookings; // In real app, fetch all
+    const allBookings = bookings; 
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

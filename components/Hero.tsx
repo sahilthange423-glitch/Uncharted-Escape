@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight } from 'lucide-react';
 import { suggestDestinations } from '../services/geminiService';
 
 interface HeroProps {
