@@ -104,7 +104,7 @@ const App: React.FC = () => {
     setIsBookingLoading(true);
 
     const newBooking: Booking = {
-        id: Math.random().toString(36).substring(2, 9),
+        id: Math.random().toString(36).substr(2, 9),
         destinationId: dest.id,
         destinationName: dest.name,
         userId: user.id,
@@ -120,8 +120,7 @@ const App: React.FC = () => {
         const response = await fetch("https://formspree.io/f/xwpgnjvk", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 destination: dest.name,
@@ -138,8 +137,6 @@ const App: React.FC = () => {
             setBookings(prev => [...prev, newBooking]);
             setIsBookingSuccess(true);
         } else {
-            const errorData = await response.json().catch(() => ({}));
-            console.error("Formspree error:", errorData);
             alert("There was an issue submitting your booking. Please try again.");
         }
     } catch (error) {
@@ -160,14 +157,14 @@ const App: React.FC = () => {
         const aiData = await generateDestinationDetails(newDestName);
         
         const newDest: Destination = {
-            id: Math.random().toString(36).substring(2, 9),
+            id: Math.random().toString(36).substr(2, 9),
             name: newDestName,
             location: newDestLocation,
             description: aiData.description,
             price: aiData.priceEstimate,
             image: `https://picsum.photos/800/600?random=${Math.random()}`,
             duration: '5 Days',
-            rating: 4.5, // Default rating for new items
+            rating: 0, // New
             features: ['AI Recommended'],
             itinerary: aiData.itinerary
         };
@@ -207,6 +204,7 @@ const App: React.FC = () => {
       <Hero 
         onSearch={(q) => console.log(q)} 
         onSuggestionClick={(s) => {
+            // Simplified: just alert for now, in real app would filter or generate
             alert(`Searching for ${s}... (Demo: Suggestion Clicked)`);
         }} 
       />
@@ -477,18 +475,13 @@ const App: React.FC = () => {
   );
 
   const AdminPanelView = () => {
-    // Check auth safely with useEffect to avoid render side-effects
-    useEffect(() => {
-        if (user?.role !== 'admin') {
-            navigateTo(ViewState.HOME);
-        }
-    }, [user]);
-
+    // Only allow admin
     if (user?.role !== 'admin') {
-        return null; 
+        setTimeout(() => navigateTo(ViewState.HOME), 0);
+        return null;
     }
 
-    const allBookings = bookings; 
+    const allBookings = bookings; // In real app, fetch all
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
