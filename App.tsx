@@ -120,7 +120,8 @@ const App: React.FC = () => {
         const response = await fetch("https://formspree.io/f/xwpgnjvk", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             },
             body: JSON.stringify({
                 destination: dest.name,
@@ -137,6 +138,8 @@ const App: React.FC = () => {
             setBookings(prev => [...prev, newBooking]);
             setIsBookingSuccess(true);
         } else {
+            const errorData = await response.json().catch(() => ({}));
+            console.error("Formspree error:", errorData);
             alert("There was an issue submitting your booking. Please try again.");
         }
     } catch (error) {
@@ -164,7 +167,7 @@ const App: React.FC = () => {
             price: aiData.priceEstimate,
             image: `https://picsum.photos/800/600?random=${Math.random()}`,
             duration: '5 Days',
-            rating: 0, // New
+            rating: 4.5, // Default rating for new items
             features: ['AI Recommended'],
             itinerary: aiData.itinerary
         };
@@ -204,7 +207,6 @@ const App: React.FC = () => {
       <Hero 
         onSearch={(q) => console.log(q)} 
         onSuggestionClick={(s) => {
-            // Simplified: just alert for now, in real app would filter or generate
             alert(`Searching for ${s}... (Demo: Suggestion Clicked)`);
         }} 
       />
